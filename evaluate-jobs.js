@@ -11,25 +11,45 @@ const client = new Anthropic({
 // Your resumes for each track - PASTE YOUR ACTUAL RESUMES HERE
 const RESUMES = {
   cybersecurity: `
-    [PASTE YOUR CYBERSECURITY RESUME HERE]
+    Cybersecurity Professional with hands-on experience in penetration testing, vulnerability assessment, and security operations.
+    - Conducted network and web application penetration tests using Burp Suite, Metasploit, and Nmap
+    - Performed OWASP Top 10 vulnerability assessments and remediation for client environments
+    - Monitored and analyzed security events using SIEM platforms (Splunk, QRadar)
+    - Applied MITRE ATT&CK framework for threat modeling and incident response
+    - Proficient in Kali Linux, Wireshark, and other security tooling
     
     Key Skills: Penetration Testing, Burp Suite, OWASP, SIEM, MITRE ATT&CK, Kali Linux
     Experience: Security Analyst Intern at DigitalXForce, Penetration Tester at Community Dreams Foundation
   `,
   ai_ml: `
-    [PASTE YOUR AI/ML RESUME HERE]
+    AI/ML Engineer with experience building and deploying machine learning models for NLP and anomaly detection tasks.
+    - Developed deep learning models using TensorFlow and PyTorch for text classification and NLP pipelines
+    - Built BERT-CNN hybrid architectures for sentiment analysis (ABSA Project)
+    - Implemented anomaly detection systems using Scikit-learn and statistical modeling
+    - Managed ML experiments and model versioning with MLflow
+    - Experience with NLP research, data preprocessing, and feature engineering
     
     Key Skills: TensorFlow, PyTorch, Scikit-learn, BERT-CNN, MLflow, NLP, Anomaly Detection
     Experience: ABSA Project, NLP research
   `,
   software_engineer: `
-    [PASTE YOUR SOFTWARE ENGINEER RESUME HERE]
+    Full-Stack Software Engineer with experience in enterprise .NET applications and cloud-native backend development.
+    - Developed RESTful APIs and microservices using .NET/C# and Spring Boot
+    - Implemented CI/CD pipelines using GitHub Actions and Azure DevOps
+    - Built scalable backend services with Node.js and Express
+    - Experience with SQL/NoSQL databases, Docker, and Agile development
+    - Web developer at Sahu Technologies delivering production-grade applications
     
     Key Skills: .NET, C#, CI/CD, Spring Boot, RESTful APIs, Node.js
     Experience: Web developer at Sahu Technologies
   `,
   data_analyst: `
-    [PASTE YOUR DATA ANALYST RESUME HERE]
+    Data Analyst with expertise in transforming raw data into actionable business insights using modern BI tools.
+    - Created interactive dashboards and reports using Tableau and Power BI
+    - Performed data wrangling, cleaning, and analysis using Pandas and Python
+    - Designed and optimized SQL queries for ETL pipelines and data warehouse operations
+    - Applied statistical modeling and regression analysis for predictive insights
+    - Delivered data analysis projects end-to-end from data ingestion to stakeholder presentation
     
     Key Skills: Pandas, Tableau, Power BI, SQL, ETL, Statistical Modeling
     Experience: Data analysis projects
@@ -61,7 +81,7 @@ function determineJobTrack(jobTitle, jobDescription) {
  */
 async function evaluateJob(job, trackOverride = null) {
   const jobTrack = trackOverride || determineJobTrack(job.title, job.description || '');
-  const resume = RESUMES[jobTrack];
+  const resume = RESUMES[jobTrack];h
 
   const prompt = `
 You are an expert career coach and resume writer. Evaluate this job posting and provide:
