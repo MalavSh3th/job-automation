@@ -1,0 +1,79 @@
+name: Daily Job Automation
+
+on:
+  schedule:
+    # Run daily at 9 AM UTC (adjust timezone as needed)
+    - cron: '0 9 * * *'
+  
+  # Also allow manual trigger
+  workflow_dispatch:
+
+jobs:
+  fetch-and-evaluate:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Create .env file
+        run: |
+          echo "ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}" > .env
+          echo "GITHUB_USERNAME=${{ secrets.GITHUB_USERNAME }}" >> .env
+          echo "CAREER_OPS_OUTPUT_PATH=./career-ops-results.csv" >> .env
+          echo "GOOGLE_SHEET_ID=${{ secrets.GOOGLE_SHEET_ID }}" >> .env
+          echo "GOOGLE_SERVICE_ACCOUNT_EMAIL=${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}" >> .env
+          echo "GOOGLE_PRIVATE_KEY=${{ secrets.GOOGLE_PRIVATE_KEY }}" >> .env
+
+      - name: Fetch latest job results from career-ops
+        run: |
+          echo "📥 Fetching jobs from career-ops..."
+          # This assumes you have career-ops results in your repo
+          # Update this command if your career-ops setup is different
+          ls -la
+          
+      - name: Run job fetch
+        run: npm run fetch
+        continue-on-error: true
+
+      - name: Run job evaluation with Claude
+        run: npm run evaluate
+        continue-on-error: true
+
+      - name: Export results to CSV
+        run: npm run upload
+        continue-on-error: true
+
+      - name: Commit and push results
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "Job Automation Bot"
+          git add -A
+          git commit -m "Daily job evaluation results - $(date)" || echo "No changes to commit"
+          git push
+        continue-on-error: true
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: job-evaluations-${{ github.run_number }}
+          path: |
+            job-evaluations.json
+            job-evaluations-results.csv
+            job-evaluations-results.md
+          retention-days: 30
+        continue-on-error: true
+
+      - name: Send completion notification
+        run: echo "✅ Job evaluation completed at $(date)"
